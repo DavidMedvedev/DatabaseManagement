@@ -1,0 +1,66 @@
+-- people --
+CREATE TABLE people(
+ pid text NOT NULL,
+ firstName text,
+ lastName text,
+ address text,
+ phoneNumber int,
+ age int,
+ primary key (pid)
+);
+
+-- coaches --
+create table coaches(
+ pid text NOT NULL references people(pid),
+ yearsOfCoaching int,
+ primary key(pid)
+);
+
+
+-- kids --
+CREATE TABLE kids(
+ primary key(kid)
+);
+
+
+-- teams --
+CREATE TABLE teams(
+ teamName text,
+ primary key(tid),
+ foreign key(aid)
+);
+
+
+-- kidTeams --
+CREATE TABLE kidTeams(
+ primary key(year),
+ primary key(kid),
+ primary key(tid),
+ foreign key(kid),
+ foreign key(tid),
+
+ );
+
+ -- coachTeams --
+CREATE TABLE coachTeams(
+ primary key(cid),
+ foreign key(cid),
+ primary key(tid),
+ foreign key(tid),
+ primary key(year),
+ foreign key(job),
+ );
+ 
+-- coachJobs --
+CREATE TABLE coachJobs(
+ primary key(rid),
+ jobName text,
+);
+
+-- ageGroup --
+CREATE TABLE agegroup(
+ youngest text,
+ oldest text,
+ primary key(aid),
+);
+
