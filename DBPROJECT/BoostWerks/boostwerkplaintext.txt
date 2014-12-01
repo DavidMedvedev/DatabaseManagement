@@ -1,0 +1,470 @@
+David Medvedev
+11/28/14
+
+
+
+--Creates
+
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS cars;
+DROP TABLE IF EXISTS technicians;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS dynoLog;
+DROP TABLE IF EXISTS dynoResults;
+DROP TABLE IF EXISTS pricing;
+DROP TABLE IF EXISTS customerCar;
+DROP TABLE IF EXISTS managers;
+DROP TABLE IF EXISTS invoice;
+DROP TABLE IF EXISTS orderToInventory;
+
+CREATE TABLE customers (
+	pid SERIAL NOT NULL,
+	firstName VARCHAR(50) NOT NULL,
+	lastName VARCHAR(50) NOT NULL,
+	address VARCHAR(255) NOT NULL,
+	zipCode VARCHAR(5) NOT NULL,
+	phoneNum VARCHAR(12) NOT NULL,
+	UNIQUE(firstName, lastName, address, zipCode, phoneNum),
+	PRIMARY KEY(pid)
+);
+
+CREATE TABLE managers (
+	mid INTEGER,
+	firstName VARCHAR(50) NOT NULL,
+	lastName VARCHAR(50) NOT NULL,
+	address VARCHAR(255) NOT NULL,
+	zipCode VARCHAR(5) NOT NULL,
+	phoneNum VARCHAR(10) NOT NULL, 
+	email VARCHAR(40) NOT NULL,
+	PRIMARY KEY(mid)
+);
+
+CREATE TABLE technicians (
+	techID VARCHAR(10),
+	mid INTEGER REFERENCES managers(mid),
+	firstName VARCHAR(50) NOT NULL,
+	lastName VARCHAR(50) NOT NULL,
+	address VARCHAR (255) NOT NULL,
+	zipCode VARCHAR(5) NOT NULL,
+	email VARCHAR (40) NOT NULL,
+	startDate DATE,
+	terminationDate DATE,
+	PRIMARY KEY(techID)
+	
+);
+
+CREATE TABLE orders (
+	orderNum VARCHAR(10) NOT NULL,
+	pid SERIAL NOT NULL REFERENCES customers(pid),
+	datePlaced DATE,
+	dateCompleted DATE,
+	techID VARCHAR(5) NOT NULL REFERENCES technicians(techID) ,
+	orderDescription VARCHAR(255),
+	custNotes VARCHAR(255),
+	PRIMARY KEY(orderNum)   
+
+);
+
+CREATE TABLE inventory (
+	partNum VARCHAR(10) NOT NULL,
+	partName VARCHAR(20) NOT NULL,
+	quantity VARCHAR(5) NOT NULL,
+	isInStock BOOLEAN NOT NULL,
+	PRIMARY KEY(partNum)
+);
+
+
+CREATE TABLE invoice (
+	orderNum VARCHAR(10) NOT NULL REFERENCES orders(orderNum),
+	currPaid VARCHAR(10),
+	totalPrice VARCHAR(10) NOT NULL,
+	datePaid Date
+);
+
+CREATE TABLE cars (
+	carID VARCHAR(10),
+	make VARCHAR(15),
+	model VARCHAR(15),
+	year VARCHAR(4),
+	mileage INTEGER,
+	PRIMARY KEY(carID)
+);
+
+CREATE TABLE customerCar (
+	customerCarID VARCHAR(10),
+	pid SERIAL NOT NULL REFERENCES customers(pid),
+	carID VARCHAR(10) REFERENCES cars(carID),
+	PRIMARY KEY(customerCarID)
+);
+
+CREATE TABLE pricing (
+	priceID VARCHAR(5),
+	orderNum VARCHAR(10) REFERENCES orders(orderNum),
+	partNum VARCHAR(10) REFERENCES inventory(partNum),
+	price VARCHAR(10),
+	effectDate DATE,
+	endDate DATE,
+	PRIMARY KEY(priceID)
+);
+
+CREATE TABLE orderToInventory (
+	orderNum VARCHAR(10) REFERENCES orders(orderNum),
+	partNum VARCHAR(10) REFERENCES inventory(partNum)
+);
+
+CREATE TABLE dynoResults (
+	resultID VARCHAR(10),
+	carID VARCHAR(10) REFERENCES cars(carID),
+	techID VARCHAR(10) REFERENCES technicians(techID),
+	amountOfRuns INTEGER,
+	runDate DATE,
+	maxHorsepower DECIMAL,
+	maxTorque DECIMAL,
+	PRIMARY KEY(resultID)
+	
+);
+
+CREATE TABLE dynoLog (
+	orderNum VARCHAR(10) REFERENCES orders(orderNum),
+	resultID VARCHAR(10) REFERENCES dynoResults(resultID)
+);
+
+--Inserts
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('01', 'Dan', 'Swezey', '11_Whipple_Road', '07444', '3334445555');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('02', 'Greg', 'Jennings', '54 Stat Lane', '04564', '9145063856');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('03', 'David', 'Medvedev', '11 Gary Road', '06903', '2035546157');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('04', 'Bill', 'Houzer', '192 Merry Court', '12601', '2037567354');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('05', 'Chris', 'Riley', '56 Larop Street', '13664', '2173945845');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('06', 'Mike', 'Jones', '294 Main Street', '35632', '3589882314');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('07', 'Jackson', 'Roberts', '284 Ridge Lane', '05674', '7684652341');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('08', 'Mason', 'Castrol', '4 Fox Way', '06903', '3458636555');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('09', 'Danielle', 'Pearson', '95 Essence Road', '06903', '4946887542');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('10', 'Dave', 'Lear', '94 Blue Road', '06903', '4758743621');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('11', 'Sam', 'Kitten', '11 Old Logging Lane', '07568', '1385768387');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('12', 'Jacob', 'Freiser', '71 Highridge Road', '12942', '8364582265');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('13', 'Rich', 'Nixon', '100 Main Road', '12601', '7365637653');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('14', 'Alan', 'Bonneer', '194 Apple Street', '29458', '4834663572');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('15', 'Sarah', 'Traxis', '13 Janes Lane', '54857', '7636538492');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('16', 'Vin', 'Lin', '485 West Trail', '65831', '4756622174');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('17', 'Amanda', 'Pooply', '12 Inky Road', '04596', '5456874338');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('18', 'Tom', 'Lizard', '56 Bertmore Drive', '23842', '5025550564');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('19', 'Jaquelyn', 'Smart', '11 Viaduct Road', '56483', '5125450128');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('20', 'Andrew', 'Heisenberg', '65 Meth Way', '45963', '5025550128');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('21', 'Paul', 'Meroap', '234 Bottleneck Ridge', '31453', '3456323292');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('22', 'Marina', 'Retora', '1349 Watch Road', '95732', '2845567163');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('23', 'Nick', 'Sweets', '753 Ring Court', '46352', '8546548242');
+
+ INSERT INTO customers( pid, firstName, lastName, address, zipCode, phoneNum )
+ VALUES('24', 'Robert', 'Mist', '92 Spear Lane', '04863', '2174959846');
+ 
+ INSERT INTO orders( orderNum, pid, datePlaced, dateCompleted, techID, orderDescription, custNotes)
+ VALUES('0001', '01', '11/30/14', '11/30/14', '01', '2JZ-GTE SWAP into BMW E46', 'N/A');
+ 
+  INSERT INTO orders( orderNum, pid, datePlaced, dateCompleted, techID, orderDescription, custNotes)
+ VALUES('0002', '02', '11/29/14', '11/30/14', '02', '1JZ-GTE SWAP into Mazda Miata', 'N/A');
+ 
+  INSERT INTO orders( orderNum, pid, datePlaced, dateCompleted, techID, orderDescription, custNotes)
+ VALUES('0003', '03', '11/25/14', '11/26/14', '02', 'Garrett G35R turbo upgrade on Toyota Supra', 'N/A');
+ 
+   INSERT INTO orders( orderNum, pid, datePlaced, dateCompleted, techID, orderDescription, custNotes)
+ VALUES('0004', '11', '11/24/14', '11/27/14', '02', 'Intercooler install on MK2 Golf', 'N/A');
+ 
+   INSERT INTO orders( orderNum, pid, datePlaced, dateCompleted, techID, orderDescription, custNotes)
+ VALUES('0005', '14', '11/22/14', '11/26/14', '02', 'Install 750cc injectors and Warlboro pump on MK4 Supra', 'N/A');
+ 
+   INSERT INTO orders( orderNum, pid, datePlaced, dateCompleted, techID, orderDescription, custNotes)
+ VALUES('0006', '07', '11/20/14', '11/30/14', '02', 'EBC install on Audi A3 2.0T', 'N/A');
+ 
+ 
+ INSERT INTO invoice (orderNum, currPaid, totalPrice, datePaid)
+ VALUES('0006', '$350.00', '$350.00', '11/20/14');
+ 
+  INSERT INTO invoice (orderNum, currPaid, totalPrice, datePaid)
+ VALUES('0005', '$1200.00', '$1200.00', '11/26/14');
+ 
+  INSERT INTO invoice (orderNum, currPaid, totalPrice, datePaid)
+ VALUES('0004', '$375.00', '$375.00', '11/27/14');
+ 
+  INSERT INTO invoice (orderNum, currPaid, totalPrice, datePaid)
+ VALUES('0003', '$950.00', '$950.00', '11/26/14');
+ 
+  INSERT INTO invoice (orderNum, currPaid, totalPrice, datePaid)
+ VALUES('0002', '$3350.00', '$5350.00', '11/29/14');
+ 
+  INSERT INTO invoice (orderNum, currPaid, totalPrice, datePaid)
+ VALUES('0001', '$9950.00', '$9950.00', '11/30/14');
+ 
+ 
+     INSERT INTO pricing (priceID, orderNum, partNum, price, effectDate, endDate)
+  VALUES('002', '0002', '01344', '$5350.00', '11/1/14', '12/1/14');
+  
+    INSERT INTO pricing (priceID, orderNum, partNum, price, effectDate, endDate)
+  VALUES('003', '0003', '01932', '$950.00', '11/1/14', '12/1/14');
+  
+      INSERT INTO pricing (priceID, orderNum, partNum, price, effectDate, endDate)
+  VALUES('004', '0004', '01384', '$375.00', '11/1/14', '12/1/14');
+  
+    INSERT INTO pricing (priceID, orderNum, partNum, price, effectDate, endDate)
+  VALUES('005', '0005', '01832', '$700.00', '11/1/14', '12/1/14');
+  
+    INSERT INTO pricing (priceID, orderNum, partNum, price, effectDate, endDate)
+  VALUES('006', '0005', '01822', '$400.00', '11/1/14', '12/1/14');
+  
+    INSERT INTO pricing (priceID, orderNum, partNum, price, effectDate, endDate)
+  VALUES('007', '0006', '01284', '$350.00', '11/1/14', '12/1/14');
+  
+  INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('001', '01', '001');
+    INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('002', '02', '002');
+    INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('003', '03', '003');
+    INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('004', '04', '004');
+    INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('005', '05', '005');
+    INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('006', '06', '006');
+    INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('007', '07', '007');
+    INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('008', '08', '008');
+    INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('009', '09', '009');
+    INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('010', '10', '010');
+    INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('011', '11', '011');
+    INSERT INTO customerCar ( customerCarID, pid, carID)
+  VALUES('012', '12', '012');
+  
+  
+  INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('001', 'BMW', '328ci', '2000', '126831');  
+    INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('002', 'Mazda', 'Miata', '1993', '151304');  
+    INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('003', 'Toyota', 'Supra', '1993', '126432');  
+    INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('004', 'Volkswagen', 'Golf', '1990', '198231');  
+    INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('005', 'Toyota', 'Supra', '1995', '84500');  
+    INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('006', 'Audi', 'A3', '2007', '91500');  
+    INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('007', 'Toyota', 'MR2', '1993', '70030');  
+    INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('008', 'Audi', 'S4', '1999', '231000');  
+    INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('009', 'Acura', 'NSX', '1994', '32000');  
+    INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('010', 'Honda', 'Civic EG', '1997', '64120');  
+    INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('011', 'Mitsubishi', 'EVO X', '2013', '14000');  
+    INSERT INTO cars( carID, make, model, year, mileage )
+  VALUES('012', 'Mitsubishi', 'Eclipse GSX', '2001', '45210');  
+    
+    INSERT INTO managers( mid, firstName, lastName, address, zipCode, phoneNum, email )
+ VALUES('04', 'Elliott', 'Sleeper', '133 Duty Road', '95732', '2845567163', 'cAbel@boostwerks.com');
+
+
+  INSERT INTO orders( orderNum, pid, datePlaced, dateCompleted, techID, orderDescription, custNotes)
+ VALUES('0001', '01', '11/30/14', '11/30/14', '01', '2JZ-GTE SWAP into BMW E46', 'N/A');
+
+  INSERT INTO orderToInventory(orderNum, partNum)
+  VALUES('0001', '01934'); 
+  INSERT INTO orderToInventory(orderNum, partNum)
+  VALUES('0002', '01344'); 
+  INSERT INTO orderToInventory(orderNum, partNum)
+  VALUES('0003', '01932'); 
+  INSERT INTO orderToInventory(orderNum, partNum)
+  VALUES('0004', '01384'); 
+
+  INSERT INTO dynoLog(orderNum, ResultID)
+  VALUES('0001', '001');
+
+  INSERT INTO dynoLog(orderNum, ResultID)
+  VALUES('0002', '002');
+
+  INSERT INTO dynoLog(orderNum, ResultID)
+  VALUES('0003', '003');
+  
+  INSERT INTO dynoLog(orderNum, ResultID)
+  VALUES('0004', '004');
+
+  INSERT INTO dynoResults(resultID, carID, techID, amountOfRuns, maxHorsepower, maxTorque)
+  VALUES('001', '001', '03', '3', '315.3', '330');
+  INSERT INTO dynoResults(resultID, carID, techID, amountOfRuns, maxHorsepower, maxTorque)
+  VALUES('002', '002', '03', '2', '280.1', '300.5'); 
+    INSERT INTO dynoResults(resultID, carID, techID, amountOfRuns, maxHorsepower, maxTorque)
+  VALUES('003', '003', '03', '3', '800.2', '792.1');
+    INSERT INTO dynoResults(resultID, carID, techID, amountOfRuns, maxHorsepower, maxTorque)
+  VALUES('004', '004', '03', '1', '341.3', '520.3'); 
+
+--Views
+  
+  CREATE VIEW showCustomersCars AS
+	SELECT customers.firstName||' '||customers.lastName as CustomerName,
+	       cars.year||' '||cars.make||' '||cars.model as Car,
+	       cars.mileage AS "Mileage(mi)"
+		
+		
+	FROM customers INNER JOIN customerCar ON customerCar.pid = customers.pid
+	INNER JOIN cars ON customerCar.carID = cars.carID
+
+
+
+CREATE VIEW showDailyOrders AS
+	SELECT orders.datePlaced as TodaysOrders,
+	       customers.firstName||' '||customers.lastName as CustomerName
+
+	FROM orders INNER JOIN customers ON customers.pid = orders.pid
+
+
+CREATE VIEW showOutOfStock AS
+	SELECT inventory.partNum,
+	   inventory.partName,
+	   inventory.isInStock as unavailStock
+
+	FROM inventory
+	WHERE inventory.isInStock = false
+    
+--reports
+select customerName, car, "Mileage(mi)"
+from showCustomersCars
+order by "Mileage(mi)"
+
+
+select TodaysOrders, customerName
+from showDailyOrders
+order by TodaysOrders
+
+--StoredProcedures
+
+CREATE FUNCTION get_car_make(manufacturer VARCHAR, OUT CAR_MAKE VARCHAR,
+						   OUT CAR_MODEL VARCHAR) RETURNS SETOF RECORD AS $$
+
+BEGIN
+RETURN QUERY select make, model
+FROM cars
+WHERE cars.make = manufacturer
+ORDER BY cars.make;
+END;
+
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE FUNCTION get_customer_name(Last_name VARCHAR, OUT personLast VARCHAR,
+						     OUT personFast VARCHAR) RETURNS SETOF RECORD AS $$
+
+BEGIN
+RETURN QUERY select firstName, lastName
+FROM customers
+WHERE customers.lastName = Last_name
+ORDER BY customers.lastName;
+END;
+
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION get_part_num(part_ID VARCHAR, OUT thePartName VARCHAR,
+						     
+						     OUT partQuantity VARCHAR) RETURNS SETOF RECORD AS $$
+
+BEGIN
+RETURN QUERY select partName, quantity
+FROM inventory
+WHERE inventory.partNum = part_ID
+ORDER BY inventory.partNum;
+END;
+
+$$ LANGUAGE plpgsql;
+
+--triggercheck
+$check_manager$ LANGUAGE plpgsql;
+
+
+	DROP FUNCTION check_orders()
+
+CREATE FUNCTION check_orders() RETURNS TRIGGER AS $check_orders$
+	BEGIN
+	   IF
+	    EXISTS (SELECT orderNum
+		    FROM orders
+		    WHERE datePlaced = NEW.datePlaced AND
+			  techID = NEW.techID)
+	    THEN
+		RAISE EXCEPTION 'Cannot create duplicate order';
+	   END IF;
+	   RETURN NEW;
+	END;
+$check_orders$ LANGUAGE plpgsql;
+
+--securityroles
+
+CREATE ROLE admin WITH CREATEDB CREATEROLE;
+
+CREATE ROLE manager WITH CREATEDB CREATEROLE;
+
+CREATE ROLE technician with CREATEDB;
+		
+
+
+
+
+
+	
+	
+ 
+	
+	
+
+
+	
